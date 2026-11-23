@@ -43,6 +43,15 @@ def test_latentinjection_structure(classname):
             "Each context must contain an injection marker - missing f-string? index "
             + str(_context_e[0])
         )
+        # A missing comma between two f-string literals concatenates them at
+        # compile time, silently merging two contexts into one that carries two
+        # markers. The containment check above still passes, so assert the count.
+        assert (
+            _context_e[1].count(garak.probes.latentinjection.INJECTION_MARKER) == 1
+        ), (
+            "Each context must contain exactly one injection marker - "
+            "missing comma between adjacent f-strings? index " + str(_context_e[0])
+        )
     for _ii_e in enumerate(p.injection_instructions):
         assert garak.probes.latentinjection.PAYLOAD_MARKER in _ii_e[1], (
             "Each injection instruction must contain a payload marker - missing f-string? index "
